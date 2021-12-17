@@ -16,4 +16,3 @@ for i in range(dlina_spiska):
 		k += 1
 print(k)
 
-input()
