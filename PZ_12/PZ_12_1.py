@@ -1,3 +1,6 @@
+# В соответствии с номером варианта перейти по ссылке на прототип.
+# Реализовать его в IDE PyCharm Community с применением пакета tk.
+# Получить интерфейс максимально приближенный к оригиналу
 from tkinter import *
 from tkinter.font import BOLD
 from tkinter.ttk import Combobox
@@ -38,3 +41,4 @@ chk.set(True)
 Checkbutton(root, text='Подтверждаю условия использования ulD сообщества', variable=chk).place(x=540, y=480)
 Button(text="Регистрация", bg='#09c', fg='white', width=10, font='Arial 13').place(x=540, y=540)
 root.mainloop()
+
