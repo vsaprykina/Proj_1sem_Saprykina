@@ -29,7 +29,7 @@ print('Сумма элементов:', sum(list(map(int, open('file_10_1.txt').
 new_file_data = list(map(int, open('file_10_1.txt').read().split(',')))  # получение списка из файла с исходными данными
 
 for n in range(0, len(new_file_data) - 1):           # цикл к 4 пункту + конвертация каждого элемента в строковый тип
-    new_file_data[n] = new_file_data[n] * new_file_data[n + 1]
+    new_file_data[n] = new_file_data[n] * new_file_data[-1]
     new_file_data[n] = str(new_file_data[n])
 new_file_data[-1] = str(new_file_data[-1])
 
