@@ -31,7 +31,7 @@ class Main(tk.Frame):
         self.db = db
         self.view_records()
 
-    def init_main(self):
+    def init_main(self) -> object:
         toolbar = tk.Frame(bg='#7c0f0f', bd=4)
         toolbar.pack(side=tk.TOP, fill=tk.X)
 
@@ -60,30 +60,30 @@ class Main(tk.Frame):
                                 bd=0, compound=tk.TOP, image=self.refresh_img, padx=5, pady=2, border='5')
         btn_refresh.pack(side=tk.LEFT)
 
-        self.tree = ttk.Treeview(self, columns=('Route', 'Drivers last name', 'Departure date', 'Arrival date', 'Weight'), height=15, show='headings')
+        self.tree = ttk.Treeview(self, columns=('route', 'driver', 'start', 'finish', 'weight'), height=15, show='headings')
 
-        self.tree.column('Route', width=120, anchor=tk.CENTER)
-        self.tree.column('Drivers last name', width=130, anchor=tk.CENTER)
-        self.tree.column('Departure date', width=120, anchor=tk.CENTER)
-        self.tree.column('Arrival date', width=140, anchor=tk.CENTER)
-        self.tree.column('Weight', width=140, anchor=tk.CENTER)
+        self.tree.column('route', width=120, anchor=tk.CENTER)
+        self.tree.column('driver', width=130, anchor=tk.CENTER)
+        self.tree.column('start', width=120, anchor=tk.CENTER)
+        self.tree.column('finish', width=140, anchor=tk.CENTER)
+        self.tree.column('weight', width=140, anchor=tk.CENTER)
 
-        self.tree.heading('Route', text='Маршрут')
-        self.tree.heading('Drivers last name', text='Фамилия водителя')
-        self.tree.heading('Departure date', text='Дата отправления')
-        self.tree.heading('Arrival date', text='Дата прибытия')
-        self.tree.heading('Weight', text='Масса')
+        self.tree.heading('route', text='Маршрут')
+        self.tree.heading('driver', text='Фамилия водителя')
+        self.tree.heading('start', text='Дата отправления')
+        self.tree.heading('finish', text='Дата прибытия')
+        self.tree.heading('weight', text='Масса')
 
         self.tree.pack()
 
-    def records(self, klient, sotr, srok, proc, score):
-        self.db.insert_data(klient, sotr, srok, proc, score)
+    def records(self, route, driver, start, finish, weight):
+        self.db.insert_data(route, driver, start, finish, weight)
         self.view_records()
 
-    def update_record(self, klient, sotr, srok, proc, score):
+    def update_record(self, route, driver, start, finish, weight):
         self.db.cur.execute(
-            "UPDATE vidacha SET klient=?, sotr=?, srok=?, proс=?, score=? WHERE klient=?",
-            (klient, sotr, srok, proc, score, self.tree.set(self.tree.selection()[0], '#1')))
+            "UPDATE vidacha SET route=?, driver=?, start=?, finish=?, weight=? WHERE route=?",
+            (route, driver, start, finish, weight, self.tree.set(self.tree.selection()[0], '#1')))
         self.db.con.commit()
         self.view_records()
 
@@ -94,19 +94,19 @@ class Main(tk.Frame):
 
     def delete_records(self):
         for selection_item in self.tree.selection():
-            self.db.cur.execute("DELETE FROM vidacha WHERE klient=?", (self.tree.set(selection_item, '#1'),))
+            self.db.cur.execute("DELETE FROM vidacha WHERE route=?", (self.tree.set(selection_item, '#1'),))
         self.db.con.commit()
         self.view_records()
 
-    def search_records(self, score):
-        score = ("%" + score + "%",)
-        self.db.cur.execute("SELECT * FROM vidacha WHERE score LIKE ?", score)
+    def search_records(self, weight):
+        weight = ("%" + weight + "%",)
+        self.db.cur.execute("SELECT * FROM vidacha WHERE weight LIKE ?", weight)
         [self.tree.delete(i) for i in self.tree.get_children()]
         [self.tree.insert('', 'end', values=row) for row in self.db.cur.fetchall()]
 
-    # def search_records(self, score):
-    #     score = (score,)
-    #     self.db.cur.execute("""SELECT * FROM vidacha WHERE score>?""", score)
+    # def search_records(self, weight):
+    #     weight = (weight,)
+    #     self.db.cur.execute("""SELECT * FROM vidacha WHERE weight>?""", weight)
     #     [self.tree.delete(i) for i in self.tree.get_children()]
     #     [self.tree.insert('', 'end', values=row) for row in self.db.cur.fetchall()]
 
@@ -117,11 +117,11 @@ class Child(tk.Toplevel):
     def __init__(self, root, app):
         super().__init__(root)
         self.btn_ok = None
-        self.entry_proc = None
-        self.entry_score = None
-        self.entry_srok = None
-        self.entry_sotr = None
-        self.entry_description = None
+        self.entry_finish = None
+        self.entry_weight = None
+        self.entry_start = None
+        self.entry_driver = None
+        self.entry_road = None
         self.init_child()
         self.view = app
 
@@ -130,41 +130,41 @@ class Child(tk.Toplevel):
         self.geometry('400x220+400+300')
         self.resizable(False, False)
 
-        label_description = tk.Label(self, text='Маршрут')
-        label_description.place(x=50, y=25)
-        self.entry_description = ttk.Entry(self)
-        self.entry_description.place(x=150, y=25)
+        label_road = tk.Label(self, text='Маршрут')
+        label_road.place(x=50, y=25)
+        self.entry_road = ttk.Entry(self)
+        self.entry_road.place(x=150, y=25)
 
-        label_sotr = tk.Label(self, text='Фамилия водителя')
-        label_sotr.place(x=50, y=50)
-        self.entry_sotr = ttk.Entry(self)
-        self.entry_sotr.place(x=150, y=50)
+        label_driver = tk.Label(self, text='Фамилия водителя')
+        label_driver.place(x=50, y=50)
+        self.entry_driver = ttk.Entry(self)
+        self.entry_driver.place(x=150, y=50)
 
-        label_srok = tk.Label(self, text='Дата отправки')
-        label_srok.place(x=50, y=75)
-        self.entry_srok = ttk.Entry(self)
-        self.entry_srok.place(x=150, y=75)
+        label_start = tk.Label(self, text='Дата отправки')
+        label_start.place(x=50, y=75)
+        self.entry_start = ttk.Entry(self)
+        self.entry_start.place(x=150, y=75)
 
-        label_proc = tk.Label(self, text='Дата прибытия')
-        label_proc.place(x=50, y=100)
-        self.entry_proc = ttk.Entry(self)
-        self.entry_proc.place(x=150, y=100)
+        label_finish = tk.Label(self, text='Дата прибытия')
+        label_finish.place(x=50, y=100)
+        self.entry_finish = ttk.Entry(self)
+        self.entry_finish.place(x=150, y=100)
 
-        label_score = tk.Label(self, text='Масса')
-        label_score.place(x=50, y=125)
-        self.entry_score = ttk.Entry(self)
-        self.entry_score.place(x=150, y=125)
+        label_weight = tk.Label(self, text='Масса')
+        label_weight.place(x=50, y=125)
+        self.entry_weight = ttk.Entry(self)
+        self.entry_weight.place(x=150, y=125)
 
         btn_cancel = ttk.Button(self, text='Закрыть', command=self.destroy)
         btn_cancel.place(x=300, y=170)
 
         self.btn_ok = ttk.Button(self, text='Добавить')
         self.btn_ok.place(x=220, y=170)
-        self.btn_ok.bind('<Button-1>', lambda event: self.view.records(self.entry_description.get(),
-                                                                       self.entry_sotr.get(),
-                                                                       self.entry_srok.get(),
-                                                                       self.entry_proc.get(),
-                                                                       self.entry_score.get()))
+        self.btn_ok.bind('<Button-1>', lambda event: self.view.records(self.entry_road.get(),
+                                                                       self.entry_driver.get(),
+                                                                       self.entry_start.get(),
+                                                                       self.entry_finish.get(),
+                                                                       self.entry_weight.get()))
 
         self.grab_set()
         self.focus_set()
@@ -180,11 +180,11 @@ class Update(Child):
         self.title("Редактировать запись")
         btn_edit = ttk.Button(self, text="Редактировать")
         btn_edit.place(x=205, y=170)
-        btn_edit.bind('<Button-1>', lambda event: self.view.update_record(self.entry_description.get(),
-                                                                          self.entry_sotr.get(),
-                                                                          self.entry_srok.get(),
-                                                                          self.entry_proc.get(),
-                                                                          self.entry_score.get()))
+        btn_edit.bind('<Button-1>', lambda event: self.view.update_record(self.entry_road.get(),
+                                                                          self.entry_driver.get(),
+                                                                          self.entry_start.get(),
+                                                                          self.entry_finish.get(),
+                                                                          self.entry_weight.get()))
         self.btn_ok.destroy()
 
 
@@ -220,16 +220,16 @@ class DB:
         with sq.connect('vidacha.db') as self.con:
             self.cur = self.con.cursor()
             self.cur.execute("""CREATE TABLE IF NOT EXISTS vidacha(
-                klient TEXT,
-                sotr TEXT NOT NULL,
-                srok INTEGER NOT NULL DEFAULT 1,
-                proс INTEGER,
-                score INTEGER
+                route TEXT,
+                driver TEXT NOT NULL,
+                start INTEGER NOT NULL DEFAULT 1,
+                finish INTEGER,
+                weight INTEGER
                 )""")
 
-    def insert_data(self, klient, sotr, srok, proc, score):
-        self.cur.execute("INSERT INTO vidacha(klient, sotr, srok, proс, score) VALUES (?, ?, ?, ?, ?)",
-                         (klient, sotr, srok, proc, score))
+    def insert_data(self, route, driver, start, finish, weight):
+        self.cur.execute("INSERT INTO vidacha(route, driver, start, finish, weight) VALUES (?, ?, ?, ?, ?)",
+                         (route, driver, start, finish, weight))
         self.con.commit()
 
 
