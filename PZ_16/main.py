@@ -60,19 +60,19 @@ class Main(tk.Frame):
                                 bd=0, compound=tk.TOP, image=self.refresh_img, padx=5, pady=2, border='5')
         btn_refresh.pack(side=tk.LEFT)
 
-        self.tree = ttk.Treeview(self, columns=('klient', 'sotr', 'srok', 'proс', 'score'), height=15, show='headings')
+        self.tree = ttk.Treeview(self, columns=('Route', 'Drivers last name', 'Departure date', 'Arrival date', 'Weight'), height=15, show='headings')
 
-        self.tree.column('klient', width=120, anchor=tk.CENTER)
-        self.tree.column('sotr', width=130, anchor=tk.CENTER)
-        self.tree.column('srok', width=120, anchor=tk.CENTER)
-        self.tree.column('proс', width=140, anchor=tk.CENTER)
-        self.tree.column('score', width=140, anchor=tk.CENTER)
+        self.tree.column('Route', width=120, anchor=tk.CENTER)
+        self.tree.column('Drivers last name', width=130, anchor=tk.CENTER)
+        self.tree.column('Departure date', width=120, anchor=tk.CENTER)
+        self.tree.column('Arrival date', width=140, anchor=tk.CENTER)
+        self.tree.column('Weight', width=140, anchor=tk.CENTER)
 
-        self.tree.heading('klient', text='Маршрут')
-        self.tree.heading('sotr', text='Фамилия водителя')
-        self.tree.heading('srok', text='Дата отправления')
-        self.tree.heading('proс', text='Дата прибытия')
-        self.tree.heading('score', text='Масса')
+        self.tree.heading('Route', text='Маршрут')
+        self.tree.heading('Drivers last name', text='Фамилия водителя')
+        self.tree.heading('Departure date', text='Дата отправления')
+        self.tree.heading('Arrival date', text='Дата прибытия')
+        self.tree.heading('Weight', text='Масса')
 
         self.tree.pack()
 
