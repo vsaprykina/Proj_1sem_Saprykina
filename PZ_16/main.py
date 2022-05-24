@@ -82,31 +82,31 @@ class Main(tk.Frame):
 
     def update_record(self, route, driver, start, finish, weight):
         self.db.cur.execute(
-            "UPDATE vidacha SET route=?, driver=?, start=?, finish=?, weight=? WHERE route=?",
+            "UPDATE tagging SET route=?, driver=?, start=?, finish=?, weight=? WHERE route=?",
             (route, driver, start, finish, weight, self.tree.set(self.tree.selection()[0], '#1')))
         self.db.con.commit()
         self.view_records()
 
     def view_records(self):
-        self.db.cur.execute("SELECT * FROM vidacha")
+        self.db.cur.execute("SELECT * FROM tagging")
         [self.tree.delete(i) for i in self.tree.get_children()]
         [self.tree.insert('', 'end', values=row) for row in self.db.cur.fetchall()]
 
     def delete_records(self):
         for selection_item in self.tree.selection():
-            self.db.cur.execute("DELETE FROM vidacha WHERE route=?", (self.tree.set(selection_item, '#1'),))
+            self.db.cur.execute("DELETE FROM tagging WHERE route=?", (self.tree.set(selection_item, '#1'),))
         self.db.con.commit()
         self.view_records()
 
     def search_records(self, weight):
         weight = ("%" + weight + "%",)
-        self.db.cur.execute("SELECT * FROM vidacha WHERE weight LIKE ?", weight)
+        self.db.cur.execute("SELECT * FROM tagging WHERE weight LIKE ?", weight)
         [self.tree.delete(i) for i in self.tree.get_children()]
         [self.tree.insert('', 'end', values=row) for row in self.db.cur.fetchall()]
 
     # def search_records(self, weight):
     #     weight = (weight,)
-    #     self.db.cur.execute("""SELECT * FROM vidacha WHERE weight>?""", weight)
+    #     self.db.cur.execute("""SELECT * FROM tagging WHERE weight>?""", weight)
     #     [self.tree.delete(i) for i in self.tree.get_children()]
     #     [self.tree.insert('', 'end', values=row) for row in self.db.cur.fetchall()]
 
@@ -217,9 +217,9 @@ class Search(tk.Toplevel):
 
 class DB:
     def __init__(self):
-        with sq.connect('vidacha.db') as self.con:
+        with sq.connect('tagging.db') as self.con:
             self.cur = self.con.cursor()
-            self.cur.execute("""CREATE TABLE IF NOT EXISTS vidacha(
+            self.cur.execute("""CREATE TABLE IF NOT EXISTS tagging(
                 route TEXT,
                 driver TEXT NOT NULL,
                 start INTEGER NOT NULL DEFAULT 1,
@@ -228,7 +228,7 @@ class DB:
                 )""")
 
     def insert_data(self, route, driver, start, finish, weight):
-        self.cur.execute("INSERT INTO vidacha(route, driver, start, finish, weight) VALUES (?, ?, ?, ?, ?)",
+        self.cur.execute("INSERT INTO tagging(route, driver, start, finish, weight) VALUES (?, ?, ?, ?, ?)",
                          (route, driver, start, finish, weight))
         self.con.commit()
 
