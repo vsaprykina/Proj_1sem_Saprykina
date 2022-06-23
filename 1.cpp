@@ -23,8 +23,7 @@ public:
     void print_point() {
         cout << m_x << " " << m_y << " " << m_z << endl;
     }
-}
-
+};
 int main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
